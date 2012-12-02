@@ -3,6 +3,7 @@ var ticss = ticss || {};
 ticss.Instance = ticss.Instance || (function() {
 	var self = {};
 	
+	var isLtr = null;
 	var theCss = null;
 	
 	function read(path) {
@@ -18,8 +19,11 @@ ticss.Instance = ticss.Instance || (function() {
 	
 	self.init = function(params) {
 		params = params || {};
+		var dir = params.dir || "ltr";
 		var map = params.map || null;
 		var file = params.file || null;
+		
+		isLtr = (dir === "ltr");
 		
 		if (map === null) {
 			if (file === null) {
@@ -32,14 +36,20 @@ ticss.Instance = ticss.Instance || (function() {
 		});
 	};
 	
-	function clone(obj, deep) {
-		if (deep) {
-			return JSON.parse(JSON.stringify(obj));
+	function convert(obj) {
+		if (!obj.replace) {
+			return obj;
 		}
 		
+		var start = (isLtr ? "left" : "right");
+		var end = (isLtr ? "right" : "left");
+		return obj.replace(/START/g, start).replace(/END/g, end);
+	}
+	
+	function cloneAndConvert(obj) {
 		var cloned = {};
 		for (var i in obj) {
-			cloned[i] = obj[i];
+			cloned[convert(i)] = convert(obj[i]);
 		}
 		return cloned;
 	}
@@ -50,11 +60,11 @@ ticss.Instance = ticss.Instance || (function() {
 		}
 		
 		// No need for deep clone as we use plain 1-level objects
-		var obj = clone(theCss.get(id));
+		var obj = cloneAndConvert(theCss.get(id));
 		
 		if (extra) {
 			for (var i in extra) {
-				obj[i] = extra[i];
+				obj[convert(i)] = convert(extra[i]);
 			}
 		}
 		
