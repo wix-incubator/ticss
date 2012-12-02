@@ -83,6 +83,7 @@ sub handleFile
             $ltr_token =~ s/END/right/g;
 
             addToken(\%tokens_rtl, $name, $rtl_token, $value);
+            addToken(\%tokens_ltr, $name, $ltr_token, $value);
         }
     }
 
