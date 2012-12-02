@@ -15,14 +15,11 @@ if ($dest eq "-add_var")
     $dest = shift;
 }
 
-my @directions = ("ltr", "rtl");
-my %tokens_rtl = ();
-my %tokens_ltr = ();
+my %tokens = ();
 
 find({wanted => \&work, no_chdir => 1}, @ARGV);
 
-storeToFile(\%tokens_rtl, "rtl");
-storeToFile(\%tokens_ltr, "ltr");
+storeToFile(\%tokens, "css");
 
 sub storeToFile
 {
@@ -73,17 +70,10 @@ sub handleFile
         my $val = $2;
         while ($val =~ /\s*(\S*?)\s*:\s*(\S*?)\s*;/g)
         {
-            my $rtl_token = $1;
-            my $ltr_token = $1;
+            my $token = $1;
             my $value = $2;
 
-            $rtl_token =~ s/START/right/g;
-            $rtl_token =~ s/END/left/g;
-            $ltr_token =~ s/START/left/g;
-            $ltr_token =~ s/END/right/g;
-
-            addToken(\%tokens_rtl, $name, $rtl_token, $value);
-            addToken(\%tokens_ltr, $name, $ltr_token, $value);
+            addToken(\%tokens, $name, $token, $value);
         }
     }
 
