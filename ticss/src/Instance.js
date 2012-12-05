@@ -37,7 +37,7 @@ ticss.Instance = ticss.Instance || (function() {
 	};
 	
 	function convert(obj) {
-		if (!obj.replace) {
+		if ((!obj) || (!obj.replace)) {
 			return obj;
 		}
 		
